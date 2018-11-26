@@ -39,7 +39,7 @@ alone_config_t *alone_config_ini_instance(alone_config_t *this_ptr, zval *filena
 			object_init_ex(this_ptr, alone_config_ini_ce);
 		}
 
-		zend_update_property(alone_config_ini_ce, this_ptr, ZEND_STRL(alone_CONFIG_FILENAME), filename);
+		zend_update_property(alone_config_ini_ce, this_ptr, ZEND_STRL(ALONE_CONFIG_FILENAME), filename);
 		zval_ptr_dtor(filename);
 
 		return this_ptr;
@@ -138,7 +138,7 @@ PHP_METHOD(Alone_Config_Ini,read) {
 	zval *z_filename = NULL;
 	zval configs;
 
-	z_filename = zend_read_property(alone_config_ini_ce ,getThis() ,ZEND_STRL(alone_CONFIG_FILENAME) ,0 ,&configs TSRMLS_DC);
+	z_filename = zend_read_property(alone_config_ini_ce ,getThis() ,ZEND_STRL(ALONE_CONFIG_FILENAME) ,0 ,&configs TSRMLS_DC);
 
 	if (Z_STRVAL_P(z_filename) != NULL) {
 
@@ -168,6 +168,7 @@ PHP_METHOD(Alone_Config_Ini,read) {
 		fh.type = ZEND_HANDLE_FILENAME;
 
 		array_init(return_value);
+		zval_ptr_dtor(z_filename);
 		if (zend_parse_ini_file(&fh, 0, (int)scanner_mode, ini_parser_cb, return_value) == FAILURE) {
 			zval_dtor(return_value);
 			RETURN_FALSE;

@@ -30,8 +30,9 @@
 #include "alone_config.h"
 
 /* If you declare any globals in php_alone.h uncomment this:
+ */
 ZEND_DECLARE_MODULE_GLOBALS(alone)
-*/
+
 
 /* True global resources - no need for thread safety here */
 static int le_alone;

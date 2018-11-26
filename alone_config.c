@@ -40,7 +40,9 @@ PHP_METHOD(Alone_Config,factory) {
 		if (strncasecmp(Z_STRVAL_P(filename) + Z_STRLEN_P(filename) - 3, "ini", 3) == 0) {
 
 			instance = alone_config_ini_instance(&zconfig, filename);
+			zval_ptr_dtor(filename);
 			if (!instance) {
+				zval_ptr_dtor(instance);
 				return;
 			}
 
@@ -49,7 +51,9 @@ PHP_METHOD(Alone_Config,factory) {
 		} else if (strncasecmp(Z_STRVAL_P(filename) + Z_STRLEN_P(filename) - 4, "yaml", 4) == 0) {
 
 			instance = alone_config_yaml_instance(&zconfig, filename);
+			zval_ptr_dtor(filename);
 			if (!instance) {
+				zval_ptr_dtor(instance);
 				return;
 			}
 
