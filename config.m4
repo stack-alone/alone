@@ -86,9 +86,12 @@ if test "$PHP_ALONE" != "no"; then
   PHP_NEW_EXTENSION(alone,
    alone.c		\
    alone_config.c		\ 
-   include/detect.c			\
-   include/parse.c			\
+   include/yaml/detect.c			\
+   include/yaml/parse.c			\
+   include/json/json_parser.tab.c			\
+   include/json/json_scanner.c			\
    configs/config_ini.c		\
+   configs/config_json.c		\
    configs/config_yaml.c	, 
    $ext_shared)
   

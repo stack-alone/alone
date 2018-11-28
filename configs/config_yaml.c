@@ -7,7 +7,7 @@
 
 #include "php_alone.h"
 #include "alone_config.h"
-#include "include/php_yaml_int.h"
+#include "include/yaml/php_yaml_int.h"
 #include "configs/config_yaml.h"
 
 

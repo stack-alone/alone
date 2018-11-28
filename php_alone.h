@@ -63,7 +63,37 @@ extern "C" {
 extern zend_module_entry alone_module_entry;
 #define phpext_alone_ptr &alone_module_entry
 
+
+/* error codes */
+typedef enum {
+	PHP_JSON_ERROR_NONE = 0,
+	PHP_JSON_ERROR_DEPTH,
+	PHP_JSON_ERROR_STATE_MISMATCH,
+	PHP_JSON_ERROR_CTRL_CHAR,
+	PHP_JSON_ERROR_SYNTAX,
+	PHP_JSON_ERROR_UTF8,
+	PHP_JSON_ERROR_RECURSION,
+	PHP_JSON_ERROR_INF_OR_NAN,
+	PHP_JSON_ERROR_UNSUPPORTED_TYPE,
+	PHP_JSON_ERROR_INVALID_PROPERTY_NAME,
+	PHP_JSON_ERROR_UTF16
+} php_json_error_code;
+
+/* json_decode() options */
+#define PHP_JSON_OBJECT_AS_ARRAY         (1<<0)
+#define PHP_JSON_BIGINT_AS_STRING        (1<<1)
+
+/* default depth */
+#define PHP_JSON_PARSER_DEFAULT_DEPTH 512
+
 #define PHP_ALONE_VERSION "0.1.0" /* Replace with version number for your extension */
+
+
+#if defined(PHP_WIN32) && defined(JSON_EXPORTS)
+#define PHP_JSON_API __declspec(dllexport)
+#else
+#define PHP_JSON_API PHPAPI
+#endif
 
 #ifdef ZTS
 #define ALONE_BG(v) ZEND_TSRMG(alone_globals_id, zend_alone_globals *, v)
@@ -100,34 +130,7 @@ ZEND_BEGIN_MODULE_GLOBALS(alone)
 	zend_long decode_timestamp;
 	zend_bool decode_php;
 	zval *timestamp_decoder;
-	zend_bool output_canonical;
-	zend_long output_indent;
-	zend_long output_width;
-	zend_string	*ext;
-	zend_string *base_uri;
-	zend_string *directory;
-	zend_string *local_library;
-	zend_string *local_namespaces;
-	zend_string *view_directory;
-	zend_string *view_ext;
-	zend_string *default_module;
-	zend_string *default_controller;
-	zend_string *default_action;
-	zend_string *bootstrap;
 	char         *global_library;
-	char         *environ_name;
-	char         *name_separator;
-	size_t        name_separator_len;
-	zend_bool 	lowcase_path;
-	zend_bool 	use_spl_autoload;
-	zend_bool 	throw_exception;
-	zend_bool   action_prefer;
-	zend_bool	name_suffix;
-	zend_bool  	autoload_started;
-	zend_bool  	running;
-	zend_bool  	in_exception;
-	zend_bool  	catch_exception;
-	zend_bool   suppressing_warning;
 	/* {{{ This only effects internally */
 	zend_bool  	st_compatible;
 	/* }}} */
@@ -138,7 +141,9 @@ ZEND_BEGIN_MODULE_GLOBALS(alone)
 	zval        active_ini_file_section;
 	zval        *ini_wanted_section;
 	uint        parsing_flag;
-	zend_bool	use_namespace;
+	int encoder_depth;
+	int encode_max_depth;
+	php_json_error_code error_code;
 ZEND_END_MODULE_GLOBALS(alone)
 
 extern ZEND_DECLARE_MODULE_GLOBALS(alone);
@@ -153,6 +158,16 @@ extern ZEND_DECLARE_MODULE_GLOBALS(alone);
 #if defined(ZTS) && defined(COMPILE_DL_ALONE)
 ZEND_TSRMLS_CACHE_EXTERN()
 #endif
+
+
+PHP_JSON_API int php_json_encode(smart_str *buf, zval *val, int options);
+PHP_JSON_API int php_json_decode_ex(zval *return_value, char *str, size_t str_len, zend_long options, zend_long depth);
+
+static inline int php_json_decode(zval *return_value, char *str, int str_len, zend_bool assoc, zend_long depth)
+{
+	return php_json_decode_ex(return_value, str, str_len, assoc ? PHP_JSON_OBJECT_AS_ARRAY : 0, depth);
+}
+
 
 #endif	/* PHP_ALONE_H */
 

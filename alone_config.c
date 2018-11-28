@@ -11,6 +11,7 @@
 
 #include "configs/config_ini.h"
 #include "configs/config_yaml.h"
+#include "configs/config_json.h"
 
 
 
@@ -59,7 +60,18 @@ PHP_METHOD(Alone_Config,factory) {
 
 			RETURN_ZVAL(&zconfig, 1, 0);
 
-		}  else {
+		} else if (strncasecmp(Z_STRVAL_P(filename) + Z_STRLEN_P(filename) - 4, "json", 4) == 0) {
+
+			instance = alone_config_json_instance(&zconfig, filename);
+			zval_ptr_dtor(filename);
+			if (!instance) {
+				zval_ptr_dtor(instance);
+				return;
+			}
+
+			RETURN_ZVAL(&zconfig, 1, 0);
+
+		} else {
 			php_error_docref(NULL, E_WARNING, "File type mismatch，The file suffix should be .ini、.yaml、.json !");
 		}
 
@@ -97,6 +109,7 @@ ALONE_STARTUP_FUNCTION(config) {
 
 	ALONE_STARTUP(config_ini);
 	ALONE_STARTUP(config_yaml);
+	ALONE_STARTUP(config_json);
 	return SUCCESS;
 }
 /* }}} */
