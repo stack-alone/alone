@@ -10,7 +10,7 @@
 #include "alone_config.h"
 
 #include "configs/config_ini.h"
-//#include "configs/config_yaml.h"
+#include "configs/config_yaml.h"
 #include "configs/config_json.h"
 
 
@@ -109,7 +109,7 @@ ALONE_STARTUP_FUNCTION(config) {
 
 	ALONE_STARTUP(config_ini);
 	ALONE_STARTUP(config_yaml);
-	//ALONE_STARTUP(config_json);
+	ALONE_STARTUP(config_json);
 	return SUCCESS;
 }
 /* }}} */
