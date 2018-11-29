@@ -20,7 +20,6 @@ extern PHPAPI zend_class_entry *spl_ce_Countable;
 alone_config_t *alone_config_yaml_instance(alone_config_t *this_ptr, zval *filename)  {
 
 	if (filename && Z_TYPE_P(filename) == IS_STRING) {
-		zval configs;
 
 		if (Z_ISUNDEF_P(this_ptr)) {
 			object_init_ex(this_ptr, alone_config_yaml_ce);
@@ -34,11 +33,11 @@ alone_config_t *alone_config_yaml_instance(alone_config_t *this_ptr, zval *filen
 
 	return NULL;
 }
-
+/**
 PHP_METHOD(Alone_Config_Yaml,__construct) {
 	 php_printf("执行alone_Config_yaml::__construct");
 }
-
+*/
 
 PHP_METHOD(Alone_Config_Yaml,read) {
 
@@ -126,7 +125,7 @@ PHP_METHOD(Alone_Config_Yaml,read) {
 zend_function_entry alone_config_yaml_methods[] = {
 	//PHP_ME(yaf_config_ilni, __construct,	yaf_config_ini_construct_arginfo, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
 	/* PHP_ME(yaf_config_ini, __destruct,	NULL, ZEND_ACC_PUBLIC|ZEND_ACC_DTOR) */
-	PHP_ME(Alone_Config_Yaml, __construct, NULL, ZEND_ACC_PUBLIC)
+	//PHP_ME(Alone_Config_Yaml, __construct, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(Alone_Config_Yaml, read, NULL, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };

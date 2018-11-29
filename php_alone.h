@@ -64,36 +64,14 @@ extern zend_module_entry alone_module_entry;
 #define phpext_alone_ptr &alone_module_entry
 
 
-/* error codes */
-typedef enum {
-	PHP_JSON_ERROR_NONE = 0,
-	PHP_JSON_ERROR_DEPTH,
-	PHP_JSON_ERROR_STATE_MISMATCH,
-	PHP_JSON_ERROR_CTRL_CHAR,
-	PHP_JSON_ERROR_SYNTAX,
-	PHP_JSON_ERROR_UTF8,
-	PHP_JSON_ERROR_RECURSION,
-	PHP_JSON_ERROR_INF_OR_NAN,
-	PHP_JSON_ERROR_UNSUPPORTED_TYPE,
-	PHP_JSON_ERROR_INVALID_PROPERTY_NAME,
-	PHP_JSON_ERROR_UTF16
-} php_json_error_code;
 
-/* json_decode() options */
-#define PHP_JSON_OBJECT_AS_ARRAY         (1<<0)
-#define PHP_JSON_BIGINT_AS_STRING        (1<<1)
+
 
 /* default depth */
 #define PHP_JSON_PARSER_DEFAULT_DEPTH 512
 
 #define PHP_ALONE_VERSION "0.1.0" /* Replace with version number for your extension */
 
-
-#if defined(PHP_WIN32) && defined(JSON_EXPORTS)
-#define PHP_JSON_API __declspec(dllexport)
-#else
-#define PHP_JSON_API PHPAPI
-#endif
 
 #ifdef ZTS
 #define ALONE_BG(v) ZEND_TSRMG(alone_globals_id, zend_alone_globals *, v)
@@ -143,7 +121,6 @@ ZEND_BEGIN_MODULE_GLOBALS(alone)
 	uint        parsing_flag;
 	int encoder_depth;
 	int encode_max_depth;
-	php_json_error_code error_code;
 ZEND_END_MODULE_GLOBALS(alone)
 
 extern ZEND_DECLARE_MODULE_GLOBALS(alone);
@@ -160,13 +137,6 @@ ZEND_TSRMLS_CACHE_EXTERN()
 #endif
 
 
-PHP_JSON_API int php_json_encode(smart_str *buf, zval *val, int options);
-PHP_JSON_API int php_json_decode_ex(zval *return_value, char *str, size_t str_len, zend_long options, zend_long depth);
-
-static inline int php_json_decode(zval *return_value, char *str, int str_len, zend_bool assoc, zend_long depth)
-{
-	return php_json_decode_ex(return_value, str, str_len, assoc ? PHP_JSON_OBJECT_AS_ARRAY : 0, depth);
-}
 
 
 #endif	/* PHP_ALONE_H */

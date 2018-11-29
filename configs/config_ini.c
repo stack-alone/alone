@@ -3,9 +3,9 @@
 #endif
 #include "php.h"
 #include "php_ini.h"
-#include "Zend/zend_API.h"
-#include "Zend/zend_interfaces.h"
-#include "Zend/zend_ini_scanner.h"
+#include <Zend/zend_API.h>
+#include <Zend/zend_interfaces.h>
+#include <Zend/zend_ini_scanner.h>
 
 
 #include "php_alone.h"
@@ -33,7 +33,6 @@ ZEND_END_ARG_INFO()
 alone_config_t *alone_config_ini_instance(alone_config_t *this_ptr, zval *filename)  {
 
 	if (filename && Z_TYPE_P(filename) == IS_STRING) {
-		zval configs;
 
 		if (Z_ISUNDEF_P(this_ptr)) {
 			object_init_ex(this_ptr, alone_config_ini_ce);
@@ -123,6 +122,7 @@ static void alone_ini_parser_cb_with_sections(zval *arg1, zval *arg2, zval *arg3
 	}
 }
 
+/**
 PHP_METHOD(Alone_Config_Ini,__construct) {
 	zval *self = getThis();
 	php_printf("执行 alone_Config_ini::__construct");
@@ -130,6 +130,7 @@ PHP_METHOD(Alone_Config_Ini,__construct) {
 		RETURN_FALSE;
 	}
 }
+*/
 
 /**
  * read ini file,
@@ -182,7 +183,6 @@ PHP_METHOD(Alone_Config_Ini,read) {
 zend_function_entry alone_config_ini_methods[] = {
 	//PHP_ME(yaf_config_ini, __construct,	yaf_config_ini_construct_arginfo, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
 	/* PHP_ME(yaf_config_ini, __destruct,	NULL, ZEND_ACC_PUBLIC|ZEND_ACC_DTOR) */
-	PHP_ME(Alone_Config_Ini, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
 	PHP_ME(Alone_Config_Ini, read, NULL, ZEND_ACC_PUBLIC)
 //	PHP_ME(alone_Config_ini, get, alone_config_ini_get_arginfo, ZEND_ACC_PUBLIC)
 //	PHP_ME(alone_Config_ini, set, alone_config_ini_set_arginfo, ZEND_ACC_PUBLIC)

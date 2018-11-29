@@ -4,10 +4,24 @@
 // If your extension references something external, use ARG_WITH
 // ARG_WITH("alone", "for alone support", "no");
 
-// Otherwise, use ARG_ENABLE
-// ARG_ENABLE("alone", "enable alone support", "no");
+
+ARG_ENABLE("alone", "enable alone support", "no");
 
 if (PHP_ALONE != "no") {
-	EXTENSION("alone", "alone.c", PHP_EXTNAME_SHARED, "/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1");
+
+	if (CHECK_HEADER_ADD_INCLUDE("yaml.h", "CFLAGS_ALONE", PHP_ALONE + ";ext\\libyaml\\include")) {
+
+		EXTENSION("alone","alone.c  alone_config.c",PHP_ALONE_SHARED, "/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1");
+
+		ADD_FLAG("CFLAGS_ALONE", "/I " + configure_module_dirname);
+
+		ADD_SOURCES(configure_module_dirname + "\\configs", "config_ini.c config_json.c config_yaml.c", "alone");
+		
+		AC_DEFINE("HAVE_ALONE", 1, "Have Alone Support");
+
+	} else {
+		WARNING("alone not enabled; libraries and headers not found");
+	}
+
 }
 

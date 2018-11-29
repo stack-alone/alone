@@ -88,8 +88,6 @@ if test "$PHP_ALONE" != "no"; then
    alone_config.c		\ 
    include/yaml/detect.c			\
    include/yaml/parse.c			\
-   include/json/json_parser.tab.c			\
-   include/json/json_scanner.c			\
    configs/config_ini.c		\
    configs/config_json.c		\
    configs/config_yaml.c	, 
