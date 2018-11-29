@@ -61,63 +61,63 @@ PHP_METHOD(Alone_Config_Json,read) {
 	if (Z_STRVAL_P(z_filename) != NULL) {
 		
 		zend_bool assoc = 1; /* return JS objects as PHP objects by default */
-				zend_long options = 0;
-				char *filename =  Z_STRVAL_P(z_filename);
-				size_t filename_len = strlen(filename);
-				zend_bool use_include_path = 0;
-				php_stream *stream;
-				zend_long offset = 0;
-				zend_long maxlen = (ssize_t) PHP_STREAM_COPY_ALL;
-				zval *zcontext = NULL;
-				php_stream_context *context = NULL;
-				zend_string *contents;
-				zval func_name;
-				zval cb_args[2];
-				zval cb_retval;
+		zend_long options = 0;
+		char *filename =  Z_STRVAL_P(z_filename);
+		size_t filename_len = strlen(filename);
+		zend_bool use_include_path = 0;
+		php_stream *stream;
+		zend_long offset = 0;
+		zend_long maxlen = (ssize_t) PHP_STREAM_COPY_ALL;
+		zval *zcontext = NULL;
+		php_stream_context *context = NULL;
+		zend_string *contents;
+		zval func_name;
+		zval cb_args[2];
+		zval cb_retval;
 
-				stream = php_stream_open_wrapper_ex(filename, "rb",
-							(use_include_path ? USE_PATH : 0) | REPORT_ERRORS,
-							NULL, context);
-				if (!stream) {
-					RETURN_FALSE;
-				}
+		stream = php_stream_open_wrapper_ex(filename, "rb",
+					(use_include_path ? USE_PATH : 0) | REPORT_ERRORS,
+					NULL, context);
+		if (!stream) {
+			RETURN_FALSE;
+		}
 
-				if (offset != 0 && php_stream_seek(stream, offset, ((offset > 0) ? SEEK_SET : SEEK_END)) < 0) {
-					php_error_docref(NULL, E_WARNING, "Failed to seek to position " ZEND_LONG_FMT " in the stream", offset);
-					php_stream_close(stream);
-					RETURN_FALSE;
-				}
+		if (offset != 0 && php_stream_seek(stream, offset, ((offset > 0) ? SEEK_SET : SEEK_END)) < 0) {
+			php_error_docref(NULL, E_WARNING, "Failed to seek to position " ZEND_LONG_FMT " in the stream", offset);
+			php_stream_close(stream);
+			RETURN_FALSE;
+		}
 
-				if (maxlen > INT_MAX) {
-					php_error_docref(NULL, E_WARNING, "maxlen truncated from " ZEND_LONG_FMT " to %d bytes", maxlen, INT_MAX);
-					maxlen = INT_MAX;
-				}
+		if (maxlen > INT_MAX) {
+			php_error_docref(NULL, E_WARNING, "maxlen truncated from " ZEND_LONG_FMT " to %d bytes", maxlen, INT_MAX);
+			maxlen = INT_MAX;
+		}
 
-				if ((contents = php_stream_copy_to_mem(stream, maxlen, 0)) != NULL) {
+		if ((contents = php_stream_copy_to_mem(stream, maxlen, 0)) != NULL) {
 
-				} else {
-					php_error_docref(NULL, E_WARNING, "Depth must be greater than zero");
-					RETURN_NULL();
-				}
+		} else {
+			php_error_docref(NULL, E_WARNING, "Depth must be greater than zero");
+			RETURN_NULL();
+		}
 
-				php_stream_close(stream);
+		php_stream_close(stream);
 
-				ZVAL_STRINGL(&func_name, "json_decode", sizeof("json_decode") - 1);
+		ZVAL_STRINGL(&func_name, "json_decode", sizeof("json_decode") - 1);
 
-				ZVAL_STR_COPY(&cb_args[0], contents);
-				ZVAL_TRUE(&cb_args[1]);
+		ZVAL_STR_COPY(&cb_args[0], contents);
+		ZVAL_TRUE(&cb_args[1]);
 
-				if (call_user_function_ex(EG(function_table), NULL, &func_name, &cb_retval, 2, cb_args, 0, NULL) == SUCCESS && !Z_ISUNDEF(cb_retval)) {
+		if (call_user_function_ex(EG(function_table), NULL, &func_name, &cb_retval, 2, cb_args, 0, NULL) == SUCCESS && !Z_ISUNDEF(cb_retval)) {
 
-					RETURN_ZVAL(&cb_retval, 1, 1);
+			RETURN_ZVAL(&cb_retval, 1, 1);
 
-				} else {
-					php_error_docref(NULL, E_WARNING, "rebind_proc PHP callback failed");
+		} else {
+			php_error_docref(NULL, E_WARNING, "rebind_proc PHP callback failed");
 
-				}
+		}
 
-				efree(cb_args);
-				RETURN_FALSE;
+		efree(cb_args);
+		RETURN_FALSE;
 		//php_json_decode_ex(return_value, str, str_len, options, depth);
 
 	} else {

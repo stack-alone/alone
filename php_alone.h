@@ -48,7 +48,6 @@ extern "C" {
 } /* extern "C" */
 #endif
 
-#include <yaml.h>
 
 
 #define ALONE_STRING_INI  "ini"
